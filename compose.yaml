@@ -1,0 +1,33 @@
+services:
+  tiva-snn-dev:
+    # Build the image with:  bash scripts/build_image.sh
+    # (podman-compose up --build is disabled because the overlay filesystem
+    #  driver cannot handle spaces in directory paths; see that script for
+    #  the full explanation.)
+    image: tiva-snn:latest
+
+    # Live-edit: changes on the host are immediately visible inside the container.
+    volumes:
+      - ./ros2_ws:/workspace/ros2_ws
+      - ./tiva:/workspace/tiva
+      - ./scripts:/workspace/scripts
+
+    # Keep stdin open and allocate a pseudo-TTY for interactive bash sessions.
+    stdin_open: true
+    tty: true
+
+    # On start, resolve the Tiva LaunchPad (VID:PID 1cbe:00fd) via sysfs and
+    # point /dev/Tiva/LaunchPad at whatever bus/device number it currently
+    # has (see scripts/setup_usb_symlink.sh — this ID never changes, even
+    # though the bus/device number does on every replug).
+    command: ["bash", "-c", "bash scripts/setup_usb_symlink.sh; exec bash"]
+
+    # Required for ROS2 DDS multicast discovery across nodes.
+    network_mode: host
+
+    devices:
+            # USB passthrough for lm4flash (Raw USB access)
+      - /dev/bus/usb/001:/dev/bus/usb/001
+
+      # Serial passthrough for UART communication (Reading IMU data)
+      - /dev/tiva_serial:/dev/tiva_serial

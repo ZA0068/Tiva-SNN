@@ -1,0 +1,41 @@
+# ── Firmware build artefacts (tiva/) ──────────────────────────────────────────
+# sltc_weights.h is generated but stays tracked: the firmware can't build without it.
+*.o
+*.d
+*.elf
+*.bin
+*.map
+*.bin.bak
+
+# Host-built parity harness
+tiva/test/encoder_parity
+tiva/test/*.out
+
+# ── ROS2 / colcon ─────────────────────────────────────────────────────────────
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Trained model checkpoints (the exported sltc_weights.h is what gets committed)
+*.pt
+*.pth
+*.ckpt
+
+# Ad-hoc serial captures (read_tiva_serial.py --out ...); labelled recordings in */data/ stay tracked
+capture*.csv
+
+# ── Editor / OS / tooling ─────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+.claude/settings.local.json
